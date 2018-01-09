@@ -67,10 +67,10 @@ public class DbConnectionController extends BaseFXController {
 		}
 		try {
 			DbUtil.getConnection(config);
-			AlertUtil.showInfoAlert("连接成功");
+			AlertUtil.showInfoAlert("connection successfully!");
 		} catch (Exception e) {
 			_LOG.error(e.getMessage(), e);
-			AlertUtil.showWarnAlert("连接失败");
+			AlertUtil.showWarnAlert("connection failed!");
 		}
 
 	}
@@ -103,7 +103,7 @@ public class DbConnectionController extends BaseFXController {
 		config.setSchema(schema);
 		config.setEncoding(encoding);
 		if (StringUtils.isAnyEmpty(name, host, port, userName, encoding, dbType, schema)) {
-			AlertUtil.showWarnAlert("密码以外其他字段必填");
+			AlertUtil.showWarnAlert("settings must be not null except password");
 			return null;
 		}
 		return config;

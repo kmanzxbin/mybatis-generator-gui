@@ -1,12 +1,27 @@
 package com.zzg.mybatis.generator.util;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.io.File;
+import java.util.List;
 
 /**
  * Created by Owen on 6/18/16.
  */
 public class StringUtilTest {
+
+    public static void main(String[] args) throws Exception{
+        File file = new File("./mybatis-generator-gui/src/test/resources/toCamelStyle.txt");
+        List<String> lines = FileUtils.readLines(file, "utf-8");
+
+        lines.forEach(StringUtilTest::print);
+    }
+
+    public static void print(String str) {
+        System.out.println(MyStringUtils.dbStringToCamelStyle2(str));
+    }
 
     @Test
     public void testDbStringToCamelStyle() {

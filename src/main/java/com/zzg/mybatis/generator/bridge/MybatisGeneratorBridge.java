@@ -15,6 +15,7 @@ import org.mybatis.generator.internal.DefaultShellCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.image.DataBuffer;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -61,6 +62,9 @@ public class MybatisGeneratorBridge {
 	    configuration.addClasspathEntry(connectorLibPath);
         // Table configuration
         TableConfiguration tableConfig = new TableConfiguration(context);
+        if (!generatorConfig.isIgnoreTableSchema()) {
+            tableConfig.setSchema(DbUtil.getSchema(selectedDatabaseConfig));
+        }
         tableConfig.setTableName(generatorConfig.getTableName());
         tableConfig.setDomainObjectName(generatorConfig.getDomainObjectName());
         if(!generatorConfig.isUseExampe()) {
@@ -70,6 +74,14 @@ public class MybatisGeneratorBridge {
             tableConfig.setSelectByExampleStatementEnabled(false);
         }
         tableConfig.setCatalog(selectedDatabaseConfig.getSchema());
+
+        if (generatorConfig.isDisableExample()) {
+            tableConfig.setCountByExampleStatementEnabled(false);
+            tableConfig.setDeleteByExampleStatementEnabled(false);
+            tableConfig.setSelectByExampleStatementEnabled(false);
+            tableConfig.setUpdateByExampleStatementEnabled(false);
+        }
+
 
         // 针对 postgresql 单独配置
         if (DbType.valueOf(selectedDatabaseConfig.getDbType()).getDriverClass() == "org.postgresql.Driver") {
@@ -164,11 +176,17 @@ public class MybatisGeneratorBridge {
                 context.addPluginConfiguration(pluginConfiguration);
             }
         }
+        PluginConfiguration pluginConfiguration = new PluginConfiguration();
+        pluginConfiguration.addProperty("type", "com.zzg.mybatis.generator.plugins.OverIsMergeablePlugin");
+        pluginConfiguration.setConfigurationType("com.zzg.mybatis.generator.plugins.OverIsMergeablePlugin");
+
+        context.addPluginConfiguration(pluginConfiguration);
         context.setTargetRuntime("MyBatis3");
 
         List<String> warnings = new ArrayList<>();
         Set<String> fullyqualifiedTables = new HashSet<>();
         Set<String> contexts = new HashSet<>();
+
         ShellCallback shellCallback = new DefaultShellCallback(true); // override=true
         MyBatisGenerator myBatisGenerator = new MyBatisGenerator(configuration, shellCallback, warnings);
         myBatisGenerator.generate(progressCallback, contexts, fullyqualifiedTables);

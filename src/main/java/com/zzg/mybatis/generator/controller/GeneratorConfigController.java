@@ -5,6 +5,7 @@ import com.zzg.mybatis.generator.util.ConfigHelper;
 import com.zzg.mybatis.generator.view.AlertUtil;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -14,6 +15,7 @@ import javafx.scene.layout.HBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.*;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -53,8 +55,8 @@ public class GeneratorConfigController extends BaseFXController {
                         setText(null);
                         setGraphic(null);
                     } else {
-                        Button btn1 = new Button("应用");
-                        Button btn2 = new Button("删除");
+                        Button btn1 = new Button("apply");
+                        Button btn2 = new Button("remove");
                         HBox hBox = new HBox();
                         hBox.setSpacing(10);
                         hBox.getChildren().add(btn1);

@@ -46,7 +46,7 @@ public class DbUtil {
 
 		DriverManager.setLoginTimeout(DB_CONNECTION_TIMEOUTS_SECONDS);
 	    Connection connection = drivers.get(DbType.valueOf(config.getDbType())).connect(url, props);
-        _LOG.info("getConnection, connection url: {}", connection);
+        _LOG.info("getConnection, connection url: {}", url);
         return connection;
     }
 
@@ -94,7 +94,9 @@ public class DbUtil {
 		Connection conn = getConnection(dbConfig);
 		try {
 			DatabaseMetaData md = conn.getMetaData();
-			ResultSet rs = md.getColumns(null, null, tableName, null);
+
+			String schema = getSchema(dbConfig);
+			ResultSet rs = md.getColumns(null, schema, tableName, null);
 			List<UITableColumnVO> columns = new ArrayList<>();
 			while (rs.next()) {
 				UITableColumnVO columnVO = new UITableColumnVO();
@@ -115,5 +117,15 @@ public class DbUtil {
         _LOG.info("getConnectionUrlWithSchema, connection url: {}", connectionUrl);
         return connectionUrl;
     }
+
+    public static String getSchema(DatabaseConfig dbConfig) {
+		String schema = dbConfig.getSchema();
+		if (DbType.valueOf(dbConfig.getDbType()) == DbType.Oracle) {
+			schema = dbConfig.getUsername().toUpperCase();
+		} else if (DbType.valueOf(dbConfig.getDbType()) == DbType.MySQL){
+			schema = dbConfig.getUsername();
+		}
+		return schema;
+	}
 
 }

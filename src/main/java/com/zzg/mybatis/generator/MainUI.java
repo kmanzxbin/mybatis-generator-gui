@@ -29,6 +29,13 @@ public class MainUI extends Application {
 		Parent root = fxmlLoader.load();
 		primaryStage.setResizable(true);
 		primaryStage.setScene(new Scene(root));
+
+		//设置标题
+		primaryStage.setTitle("MyBatis Generator GUI");
+		//设置窗口的图标.
+
+		Image icon = new Image("icons/mybatis.png");
+		primaryStage.getIcons().add(icon);
 		primaryStage.show();
 
 		MainUIController controller = fxmlLoader.getController();
@@ -40,11 +47,11 @@ public class MainUI extends Application {
 		if (Integer.parseInt(version.substring(2, 3)) >= 8 && Integer.parseInt(version.substring(6)) >= 60) {
 			launch(args);
 		} else {
-			JFrame jFrame = new JFrame("版本错误");
+			JFrame jFrame = new JFrame("Java version is too low!");
 			jFrame.setSize(500, 100);
 			jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			JPanel jPanel = new JPanel();
-			JLabel jLabel = new JLabel("JDK的版本不能低于1.8.0.60，请升级至最近的JDK 1.8再运行此软件");
+			JLabel jLabel = new JLabel("JDK version can not be less than 1.8.0.60, please upgrade to the nearest JDK 1.8 and then run this software");
 			jPanel.add(jLabel);
 			jFrame.add(jPanel);
 			jFrame.setLocationRelativeTo(null);

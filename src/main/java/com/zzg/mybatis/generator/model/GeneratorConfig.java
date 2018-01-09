@@ -60,6 +60,20 @@ public class GeneratorConfig {
 		this.useExampe = useExampe;
 	}
 
+	private boolean autoConvertJavaType;
+
+	private boolean disableExample;
+
+	private boolean ignoreTableSchema;
+
+	public boolean isIgnoreTableSchema() {
+		return ignoreTableSchema;
+	}
+
+	public void setIgnoreTableSchema(boolean ignoreTableSchema) {
+		this.ignoreTableSchema = ignoreTableSchema;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -211,4 +225,20 @@ public class GeneratorConfig {
     public void setEncoding(String encoding) {
         this.encoding = encoding;
     }
+
+	public boolean isAutoConvertJavaType() {
+		return autoConvertJavaType;
+	}
+
+	public void setAutoConvertJavaType(boolean autoConvertJavaType) {
+		this.autoConvertJavaType = autoConvertJavaType;
+	}
+
+	public boolean isDisableExample() {
+		return disableExample;
+	}
+
+	public void setDisableExample(boolean disableExample) {
+		this.disableExample = disableExample;
+	}
 }
