@@ -74,6 +74,8 @@ public class LtmsTypeConvertor {
                         String className = tableNameLowerCase.replace("_", "");
                         if (columnName.endsWith("_id") || columnName.equals("id")) {
                             columnOverride.setJavaType("Long");
+                        } else if (columnName.endsWith("timestamp")) {
+                            columnOverride.setJavaType("Long");
                         } else {
                             columnName = columnName.replace("_", "");
                             if (columnName.contains("amount")
