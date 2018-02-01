@@ -16,7 +16,7 @@ import java.util.*;
 public class DbUtil {
 
     private static final Logger _LOG = LoggerFactory.getLogger(DbUtil.class);
-    private static final int DB_CONNECTION_TIMEOUTS_SECONDS = 1;
+    private static final int DB_CONNECTION_TIMEOUTS_SECONDS = 10;
 
     private static Map<DbType, Driver> drivers;
 
@@ -32,7 +32,7 @@ public class DbUtil {
 				_LOG.info("load driver class: {}", driver);
 				drivers.put(dbType, driver);
 			} catch (Exception e) {
-				_LOG.error("load driver error");
+				_LOG.error("load driver error", e);
 			}
 		}
 	}

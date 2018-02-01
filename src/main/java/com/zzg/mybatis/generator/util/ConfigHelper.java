@@ -30,6 +30,7 @@ public class ConfigHelper {
 	private static final Logger _LOG = LoggerFactory.getLogger(ConfigHelper.class);
 	private static final String BASE_DIR = "config";
 	private static final String CONFIG_FILE = "/sqlite3.db";
+	public static final String NO_DEIVER_MESSAGE = "can not find driver lib, plz contact Developer";
 
 	public static void createEmptyFiles() throws Exception {
 		File file = new File(BASE_DIR);
@@ -96,7 +97,7 @@ public class ConfigHelper {
 			if (!isUpdate) {
 				ResultSet rs1 = stat.executeQuery("SELECT * from dbs where name = '" + configName + "'");
 				if (rs1.next()) {
-					throw new RuntimeException("配置已经存在, 请使用其它名字");
+					throw new RuntimeException("configuration exists, plz chose other names");
 				}
 			}
 			String jsonStr = JSON.toJSONString(dbConfig);
@@ -218,7 +219,7 @@ public class ConfigHelper {
 				File file = new File(resource.toURI().getRawPath() + "/../lib/" + type.getConnectorJarFile());
 				return URLDecoder.decode(file.getCanonicalPath(), Charset.forName("UTF-8").displayName());
 			} catch (Exception e) {
-				throw new RuntimeException("找不到驱动文件，请联系开发者");
+				throw new RuntimeException(NO_DEIVER_MESSAGE);
 			}
 		} else {
 			throw new RuntimeException("lib can't find");
@@ -246,7 +247,7 @@ public class ConfigHelper {
 				}
 			}
 		} catch (Exception e) {
-			throw new RuntimeException("找不到驱动文件，请联系开发者");
+			throw new RuntimeException(NO_DEIVER_MESSAGE);
 		}
 		return jarFilePathList;
 	}

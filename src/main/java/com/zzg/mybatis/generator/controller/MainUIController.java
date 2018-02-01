@@ -75,11 +75,9 @@ public class MainUIController extends BaseFXController {
     @FXML
     private CheckBox useActualColumnNamesCheckbox;
     @FXML
-    private CheckBox useExample;
-    @FXML
     private CheckBox autoConvertJavaType;
     @FXML
-    private CheckBox disableExample;
+    private CheckBox useExample;
     @FXML
     private CheckBox ignoreTableSchema;
     @FXML
@@ -94,8 +92,6 @@ public class MainUIController extends BaseFXController {
     private List<IgnoredColumn> ignoredColumns;
 
     private List<ColumnOverride> columnOverrides;
-
-
     @FXML
     private ChoiceBox<String> encodingChoice;
 
@@ -200,9 +196,11 @@ public class MainUIController extends BaseFXController {
             return cell;
         });
         loadLeftDBTree();
-        encodingChoice.setItems(FXCollections.observableArrayList("UTF-8"));
-        encodingChoice.setValue("UTF-8");
 
+        if (encodingChoice != null) {
+            encodingChoice.setItems(FXCollections.observableArrayList("UTF-8"));
+            encodingChoice.setValue("UTF-8");
+        }
     }
 
     void loadLeftDBTree() {
@@ -292,14 +290,14 @@ public class MainUIController extends BaseFXController {
 
         // add by Benjamin 为ltms增加自动转换数据类型的处理
 
-        if (autoConvertJavaType.isSelected()){
+        if (autoConvertJavaType.isSelected()) {
             try {
-            List<UITableColumnVO> tableColumns = DbUtil.getTableColumns(selectedDatabaseConfig, tableName);
+                List<UITableColumnVO> tableColumns = DbUtil.getTableColumns(selectedDatabaseConfig, tableName);
 
-            LtmsTypeConvertor ltmsTypeConvertor = new LtmsTypeConvertor();
-            ltmsTypeConvertor.convert(tableColumns, tableName);
-            this.columnOverrides = ltmsTypeConvertor.getColumnOverrides();
-            this.ignoredColumns = ltmsTypeConvertor.getIgnoredColumns();
+                LtmsTypeConvertor ltmsTypeConvertor = new LtmsTypeConvertor();
+                ltmsTypeConvertor.convert(tableColumns, tableName);
+                this.columnOverrides = ltmsTypeConvertor.getColumnOverrides();
+                this.ignoredColumns = ltmsTypeConvertor.getIgnoredColumns();
 
             } catch (Exception e) {
                 _LOG.error(e.getMessage(), e);
@@ -389,7 +387,6 @@ public class MainUIController extends BaseFXController {
         generatorConfig.setEncoding(encodingChoice.getValue());
         generatorConfig.setUseExampe(useExample.isSelected());
         generatorConfig.setAutoConvertJavaType(autoConvertJavaType.isSelected());
-        generatorConfig.setDisableExample(disableExample.isSelected());
         generatorConfig.setIgnoreTableSchema(ignoreTableSchema.isSelected());
         return generatorConfig;
     }
@@ -411,7 +408,6 @@ public class MainUIController extends BaseFXController {
         annotationCheckBox.setSelected(generatorConfig.isAnnotation());
         useActualColumnNamesCheckbox.setSelected(generatorConfig.isUseActualColumnNames());
         autoConvertJavaType.setSelected(generatorConfig.isAutoConvertJavaType());
-        disableExample.setSelected(generatorConfig.isDisableExample());
         ignoreTableSchema.setSelected(generatorConfig.isIgnoreTableSchema());
     }
 

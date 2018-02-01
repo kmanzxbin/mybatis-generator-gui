@@ -21,6 +21,8 @@ public class MainUI extends Application {
 
 	private static final Logger _LOG = LoggerFactory.getLogger(MainUI.class);
 
+
+
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		ConfigHelper.createEmptyFiles();
@@ -34,7 +36,7 @@ public class MainUI extends Application {
 		primaryStage.setTitle("MyBatis Generator GUI");
 		//设置窗口的图标.
 
-		Image icon = new Image("icons/mybatis.png");
+		Image icon = new Image("icons/bird.png");
 		primaryStage.getIcons().add(icon);
 		primaryStage.show();
 

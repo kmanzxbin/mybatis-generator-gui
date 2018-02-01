@@ -62,8 +62,6 @@ public class GeneratorConfig {
 
 	private boolean autoConvertJavaType;
 
-	private boolean disableExample;
-
 	private boolean ignoreTableSchema;
 
 	public boolean isIgnoreTableSchema() {
@@ -232,13 +230,5 @@ public class GeneratorConfig {
 
 	public void setAutoConvertJavaType(boolean autoConvertJavaType) {
 		this.autoConvertJavaType = autoConvertJavaType;
-	}
-
-	public boolean isDisableExample() {
-		return disableExample;
-	}
-
-	public void setDisableExample(boolean disableExample) {
-		this.disableExample = disableExample;
 	}
 }
