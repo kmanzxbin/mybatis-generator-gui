@@ -1,9 +1,12 @@
 mybatis-generator-gui
 ==============
 
+### 界面修改
+布局调优，界面改为英文，方便老外使用，其实是为了装逼，你懂的。
+
 mybatis-generator-gui是基于[mybatis generator](http://www.mybatis.org/generator/index.html)开发一款界面工具, 本工具可以使你非常容易及快速生成Mybatis的Java POJO文件及数据库Mapping文件。
 
-![MainUI](https://cloud.githubusercontent.com/assets/3505708/22870467/834ed1c2-f1e2-11e6-9ae5-650b88722a7c.png)
+![MainUI](https://github.com/kmanzxbin/mybatis-generator-gui/blob/master/mainUI_20180201140743.png)
 
 ### 注意事项
 * 0.8.3版本请删除版本之前版本config目录下的sqlite3.db文件，重新`mvn install`安装
