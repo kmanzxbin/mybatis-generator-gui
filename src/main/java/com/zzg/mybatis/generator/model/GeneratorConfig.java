@@ -46,21 +46,21 @@ public class GeneratorConfig {
 
 	private boolean useActualColumnNames;
 
-	private boolean useExampe;
+	private boolean useExample;
 
 	private String generateKeys;
 
 	private String encoding;
 
-	public boolean isUseExampe() {
-		return useExampe;
+	public boolean isUseExample() {
+		return useExample;
 	}
 
-	public void setUseExampe(boolean useExampe) {
-		this.useExampe = useExampe;
+	public void setUseExample(boolean useExample) {
+		this.useExample = useExample;
 	}
 
-	private boolean autoConvertJavaType;
+	private String JavaTypeConverter;
 
 	private boolean ignoreTableSchema;
 
@@ -224,11 +224,11 @@ public class GeneratorConfig {
         this.encoding = encoding;
     }
 
-	public boolean isAutoConvertJavaType() {
-		return autoConvertJavaType;
+	public String getJavaTypeConverter() {
+		return JavaTypeConverter;
 	}
 
-	public void setAutoConvertJavaType(boolean autoConvertJavaType) {
-		this.autoConvertJavaType = autoConvertJavaType;
+	public void setJavaTypeConverter(String javaTypeConverter) {
+		JavaTypeConverter = javaTypeConverter;
 	}
 }

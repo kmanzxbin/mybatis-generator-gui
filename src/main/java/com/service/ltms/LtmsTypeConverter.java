@@ -1,5 +1,6 @@
 package com.service.ltms;
 
+import com.zzg.mybatis.generator.controller.JavaTypeConverter;
 import com.zzg.mybatis.generator.model.UITableColumnVO;
 import org.mybatis.generator.config.ColumnOverride;
 import org.mybatis.generator.config.IgnoredColumn;
@@ -14,9 +15,10 @@ import java.util.List;
  * Created by benjamin on 2018/1/9.
  */
 
-public class LtmsTypeConvertor {
-    private static final Logger _LOG = LoggerFactory.getLogger(LtmsTypeConvertor.class);
+public class LtmsTypeConverter implements JavaTypeConverter {
+    private static final Logger LOG = LoggerFactory.getLogger(LtmsTypeConverter.class);
     List<String> tableNameWithoutBlob = Arrays.asList(new String[]{"lt_retailer", "lt_distributor", "lt_sub_retailer", "lt_sub_distributor"});
+    List<String> blobColumn = Arrays.asList(new String[]{"profile_photo", "store_photo1", "store_photo1_thumb", "store_photo2", "store_photo2_thumb", "retailer_photo", "retailer_photo_thumb"});
     private List<IgnoredColumn> ignoredColumns;
     private List<ColumnOverride> columnOverrides;
 
@@ -38,7 +40,7 @@ public class LtmsTypeConvertor {
 
     public void convert(List<UITableColumnVO> tableColumns, String tableName) {
 
-        _LOG.info("autoConvertJavaType");
+        LOG.info("autoConvertJavaType");
 
         // If select same schema and another table, update table data
         List<UITableColumnVO> items = tableColumns;
@@ -56,17 +58,18 @@ public class LtmsTypeConvertor {
 
                 if (jdbcType.equals("blob")
                         && tableNameWithoutBlob.contains(tableNameLowerCase)
-                        && !(columnName.equals("profile_photo"))) {
+                        && !(blobColumn.contains(columnName))) {
                     IgnoredColumn ignoredColumn = new IgnoredColumn(item.getColumnName());
-                    _LOG.info("ignore blob column {} in {}", columnName, tableNameLowerCase);
+                    LOG.info("ignore blob column {} in {}", columnName, tableNameLowerCase);
                     ignoredColumns.add(ignoredColumn);
                 } else if (item.getChecked() && item.getJavaType() == null && item.getTypeHandle() == null && item.getPropertyName() == null) {
 
                     if (jdbcType.startsWith("nvarchar")) {
                         ColumnOverride columnOverride = new ColumnOverride(item.getColumnName());
                         columnOverride.setJavaType("String");
+                        columnOverride.setJdbcType("NVARCHAR");
                         columnOverrides.add(columnOverride);
-                        _LOG.info("convert {} {} java Type to {}", columnOverride.getColumnName(), item.getJdbcType(), columnOverride.getJavaType());
+                        LOG.info("convert {} {} java Type to {}", columnOverride.getColumnName(), item.getJdbcType(), columnOverride.getJavaType());
 
                     } else if (jdbcType.equals("number")) {
                         ColumnOverride columnOverride = new ColumnOverride(item.getColumnName());
@@ -98,17 +101,17 @@ public class LtmsTypeConvertor {
                             }
                         }
                         columnOverrides.add(columnOverride);
-                        _LOG.info("convert {} {} java Type to {}", columnOverride.getColumnName(), item.getJdbcType(), columnOverride.getJavaType());
+                        LOG.info("convert {} {} java Type to {}", columnOverride.getColumnName(), item.getJdbcType(), columnOverride.getJavaType());
                     } else if (item.getJdbcType().toLowerCase().equals("float")) {
                         ColumnOverride columnOverride = new ColumnOverride(item.getColumnName());
                         columnOverride.setJavaType("Double");
                         columnOverrides.add(columnOverride);
-                        _LOG.info("convert {} {} java Type to {}", columnOverride.getColumnName(), item.getJdbcType(), columnOverride.getJavaType());
+                        LOG.info("convert {} {} java Type to {}", columnOverride.getColumnName(), item.getJdbcType(), columnOverride.getJavaType());
 //                            } else if (item.getJdbcType().toLowerCase().equals("blob")) {
 //                                ColumnOverride columnOverride = new ColumnOverride(item.getColumnName());
 //                                columnOverride.setJavaType("byte[]");
 //                                columnOverrides.add(columnOverride);
-//                                _LOG.info("convert {} {} java Type to {}", columnOverride.getColumnName(), item.getJdbcType(), columnOverride.getJavaType());
+//                                LOG.info("convert {} {} java Type to {}", columnOverride.getColumnName(), item.getJdbcType(), columnOverride.getJavaType());
 
                     }
                 }

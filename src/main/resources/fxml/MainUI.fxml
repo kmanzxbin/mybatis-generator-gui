@@ -216,7 +216,7 @@
                                                 <Insets left="5.0"/>
                                             </GridPane.margin>
                                         </TextField>
-                                        <Label text="mapper XML package" GridPane.rowIndex="5"/>
+                                        <Label text="XML package" GridPane.rowIndex="5"/>
                                         <TextField fx:id="mapperTargetPackage" prefHeight="24.0" prefWidth="248.0"
                                                    promptText="com.example" GridPane.columnIndex="1"
                                                    GridPane.rowIndex="5">
@@ -283,13 +283,18 @@
                                                   text="actual column name"
                                                   GridPane.columnIndex="2" GridPane.rowIndex="11" GridPane.columnSpan="2" GridPane.halignment="LEFT"/>
 
-                                        <CheckBox fx:id="autoConvertJavaType" mnemonicParsing="false"
-                                                  selected="false" text="auto convert java type"
-                                                  GridPane.columnIndex="0" GridPane.rowIndex="12" GridPane.columnSpan="2" GridPane.halignment="LEFT"/>
                                         <CheckBox fx:id="useExample" mnemonicParsing="false"
                                                   selected="true" text="use example"
-                                                  GridPane.columnIndex="2" GridPane.rowIndex="12" GridPane.columnSpan="2" GridPane.halignment="LEFT"/>
+                                                  GridPane.columnIndex="0" GridPane.rowIndex="12" GridPane.columnSpan="2" GridPane.halignment="LEFT"/>
 
+                                        <Label text="java type converter" GridPane.columnIndex="0" GridPane.rowIndex="13"/>
+                                        <TextField fx:id="javaTypeConverter" prefHeight="24.0" prefWidth="138.0"
+                                                   promptText="" GridPane.columnIndex="1"
+                                                   GridPane.rowIndex="13" GridPane.columnSpan="3">
+                                            <GridPane.margin>
+                                                <Insets left="5.0"/>
+                                            </GridPane.margin>
+                                        </TextField>
                                         <!-- 按钮部分 -->
                                         <HBox alignment="CENTER" prefHeight="24.0" prefWidth="400.0"
                                               spacing="10.0" GridPane.columnIndex="0" GridPane.columnSpan="4"

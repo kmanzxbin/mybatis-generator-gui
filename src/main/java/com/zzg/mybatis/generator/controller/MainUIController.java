@@ -1,6 +1,5 @@
 package com.zzg.mybatis.generator.controller;
 
-import com.service.ltms.LtmsTypeConvertor;
 import com.zzg.mybatis.generator.bridge.MybatisGeneratorBridge;
 import com.zzg.mybatis.generator.model.DatabaseConfig;
 import com.zzg.mybatis.generator.model.GeneratorConfig;
@@ -75,7 +74,7 @@ public class MainUIController extends BaseFXController {
     @FXML
     private CheckBox useActualColumnNamesCheckbox;
     @FXML
-    private CheckBox autoConvertJavaType;
+    private TextField javaTypeConverter;
     @FXML
     private CheckBox useExample;
     @FXML
@@ -116,12 +115,13 @@ public class MainUIController extends BaseFXController {
             controller.showDialogStage();
         });
 
-        CheckBoxTreeItem<String> checkBoxTreeItem = new CheckBoxTreeItem<>();
-        checkBoxTreeItem.setExpanded(true);
+        CheckBoxTreeItem<String> dbTreeItem = new CheckBoxTreeItem<>();
+        dbTreeItem.setExpanded(true);
 //        checkBoxTreeItem.setIndependent(true);
         leftDBTree.setShowRoot(false);
-        leftDBTree.setRoot(checkBoxTreeItem);
+        leftDBTree.setRoot(dbTreeItem);
         Callback<TreeView<String>, TreeCell<String>> defaultCellFactory = CheckBoxTreeCell.forTreeView();
+
         leftDBTree.setCellFactory((TreeView<String> tv) -> {
             TreeCell<String> cell = defaultCellFactory.call(tv);
 //            this.cell = cell;
@@ -129,69 +129,71 @@ public class MainUIController extends BaseFXController {
                 int level = leftDBTree.getTreeItemLevel(cell.getTreeItem());
                 TreeCell<String> treeCell = (TreeCell<String>) event.getSource();
                 TreeItem<String> treeItem = treeCell.getTreeItem();
-                if (level == 1) {
-                    final ContextMenu contextMenu = new ContextMenu();
-                    MenuItem item1 = new MenuItem("close connection");
-                    item1.setOnAction(event1 -> treeItem.getChildren().clear());
-                    MenuItem item2 = new MenuItem("edit connection");
-                    item2.setOnAction(event1 -> {
-                        DatabaseConfig selectedConfig = (DatabaseConfig) treeItem.getGraphic().getUserData();
-                        DbConnectionController controller = (DbConnectionController) loadFXMLPage("Edit connection", FXMLPage.NEW_CONNECTION, false);
-                        controller.setMainUIController(this);
-                        controller.setConfig(selectedConfig);
-                        controller.showDialogStage();
-                    });
-                    MenuItem item3 = new MenuItem("remove connection");
-                    item3.setOnAction(event1 -> {
+                if (event.getClickCount() == 1) {
+
+                    if (level == 1) {
+                        final ContextMenu contextMenu = new ContextMenu();
+                        MenuItem item1 = new MenuItem("close connection");
+                        item1.setOnAction(event1 -> treeItem.getChildren().clear());
+                        MenuItem item2 = new MenuItem("edit connection");
+                        item2.setOnAction(event1 -> {
+                            DatabaseConfig selectedConfig = (DatabaseConfig) treeItem.getGraphic().getUserData();
+                            DbConnectionController controller = (DbConnectionController) loadFXMLPage("Edit connection", FXMLPage.NEW_CONNECTION, false);
+                            controller.setMainUIController(this);
+                            controller.setConfig(selectedConfig);
+                            controller.showDialogStage();
+                        });
+                        MenuItem item3 = new MenuItem("remove connection");
+                        item3.setOnAction(event1 -> {
+                            DatabaseConfig selectedConfig = (DatabaseConfig) treeItem.getGraphic().getUserData();
+                            try {
+                                ConfigHelper.deleteDatabaseConfig(selectedConfig);
+                                this.loadLeftDBTree();
+                            } catch (Exception e) {
+                                AlertUtil.showErrorAlert("Delete connection failed! Reason: " + e.getMessage());
+                            }
+                        });
+                        contextMenu.getItems().addAll(item1, item2, item3);
+                        cell.setContextMenu(contextMenu);
+                    }
+                } else if (event.getClickCount() == 2) {
+                    if (level == 1) {
+                        treeItem.setExpanded(true);
+                        System.out.println("index: " + leftDBTree.getSelectionModel().getSelectedIndex());
                         DatabaseConfig selectedConfig = (DatabaseConfig) treeItem.getGraphic().getUserData();
                         try {
-                            ConfigHelper.deleteDatabaseConfig(selectedConfig);
-                            this.loadLeftDBTree();
-                        } catch (Exception e) {
-                            AlertUtil.showErrorAlert("Delete connection failed! Reason: " + e.getMessage());
-                        }
-                    });
-                    contextMenu.getItems().addAll(item1, item2, item3);
-                    cell.setContextMenu(contextMenu);
-                }
-//                if (event.getClickCount() == 2) {
-                treeItem.setExpanded(true);
-                if (level == 1) {
-                    System.out.println("index: " + leftDBTree.getSelectionModel().getSelectedIndex());
-                    DatabaseConfig selectedConfig = (DatabaseConfig) treeItem.getGraphic().getUserData();
-                    try {
-                        List<String> tables = DbUtil.getTableNames(selectedConfig);
-                        if (tables != null && tables.size() > 0) {
-                            ObservableList<TreeItem<String>> children = cell.getTreeItem().getChildren();
-                            children.clear();
-                            for (String tableName : tables) {
-                                CheckBoxTreeItem<String> newTreeItem = new CheckBoxTreeItem<>();
-                                ImageView imageView = new ImageView("icons/table.png");
-                                imageView.setFitHeight(16);
-                                imageView.setFitWidth(16);
-                                newTreeItem.setGraphic(imageView);
-                                newTreeItem.setValue(tableName);
-                                children.add(newTreeItem);
+                            List<String> tables = DbUtil.getTableNames(selectedConfig);
+                            if (tables != null && tables.size() > 0) {
+                                ObservableList<TreeItem<String>> children = cell.getTreeItem().getChildren();
+                                children.clear();
+                                for (String tableName : tables) {
+                                    CheckBoxTreeItem<String> newTreeItem = new CheckBoxTreeItem<>();
+                                    ImageView imageView = new ImageView("icons/table.png");
+                                    imageView.setFitHeight(16);
+                                    imageView.setFitWidth(16);
+                                    newTreeItem.setGraphic(imageView);
+                                    newTreeItem.setValue(tableName);
+                                    children.add(newTreeItem);
+                                }
                             }
+                        } catch (SQLRecoverableException e) {
+                            _LOG.error(e.getMessage(), e);
+                            AlertUtil.showErrorAlert("connection timeout!");
+                        } catch (Exception e) {
+                            _LOG.error(e.getMessage(), e);
+                            AlertUtil.showErrorAlert(e.getMessage());
                         }
-                    } catch (SQLRecoverableException e) {
-                        _LOG.error(e.getMessage(), e);
-                        AlertUtil.showErrorAlert("connection timeout!");
-                    } catch (Exception e) {
-                        _LOG.error(e.getMessage(), e);
-                        AlertUtil.showErrorAlert(e.getMessage());
+                    } else if (level == 2) { // left DB tree level3
+                        String tableName = treeCell.getTreeItem().getValue();
+                        selectedDatabaseConfig = (DatabaseConfig) treeItem.getParent().getGraphic().getUserData();
+                        if (!tableName.equals(this.tableName)) {
+                            generateKeysField.clear();
+                        }
+                        this.tableName = tableName;
+                        tableNameField.setText(tableName);
+                        domainObjectNameField.setText(MyStringUtils.dbStringToCamelStyle(tableName));
                     }
-                } else if (level == 2) { // left DB tree level3
-                    String tableName = treeCell.getTreeItem().getValue();
-                    selectedDatabaseConfig = (DatabaseConfig) treeItem.getParent().getGraphic().getUserData();
-                    if (!tableName.equals(this.tableName)) {
-                        generateKeysField.clear();
-                    }
-                    this.tableName = tableName;
-                    tableNameField.setText(tableName);
-                    domainObjectNameField.setText(MyStringUtils.dbStringToCamelStyle(tableName));
                 }
-//                }
             });
             return cell;
         });
@@ -209,14 +211,15 @@ public class MainUIController extends BaseFXController {
         try {
             List<DatabaseConfig> dbConfigs = ConfigHelper.loadDatabaseConfig();
             for (DatabaseConfig dbConfig : dbConfigs) {
-                TreeItem<String> treeItem = new TreeItem<>();
-                treeItem.setValue(dbConfig.getName());
-                ImageView dbImage = new ImageView("icons/computer.png");
+                CheckBoxTreeItem<String> dbTreeItem = new CheckBoxTreeItem<>();
+                dbTreeItem.setValue(dbConfig.getName());
+                ImageView dbImage = new ImageView("icons/database.png");
                 dbImage.setFitHeight(16);
                 dbImage.setFitWidth(16);
                 dbImage.setUserData(dbConfig);
-                treeItem.setGraphic(dbImage);
-                rootTreeItem.getChildren().add(treeItem);
+                dbTreeItem.setGraphic(dbImage);
+                rootTreeItem.getChildren().add(dbTreeItem);
+
             }
         } catch (Exception e) {
             _LOG.error("connect db failed, reason: {}", e);
@@ -238,23 +241,35 @@ public class MainUIController extends BaseFXController {
     public void generatorSelectedCode() {
 
 
-        // todo 暂不支持多个库
         _LOG.info("generatorSelectedCode");
-        ObservableList<TreeItem<String>> children = leftDBTree.getRoot().getChildren().get(0).getChildren();
 
-        for (TreeItem treeItem : children) {
-            CheckBoxTreeItem checkBoxTreeItem = (CheckBoxTreeItem) treeItem;
-            if (checkBoxTreeItem.isSelected()) {
+        ObservableList<TreeItem<String>> dbs = leftDBTree.getRoot().getChildren();
 
-                selectedDatabaseConfig = (DatabaseConfig) treeItem.getParent().getGraphic().getUserData();
+        // 支持多个库
+        for (TreeItem dbTreeItem : dbs) {
+            ObservableList<TreeItem<String>> children = dbTreeItem.getChildren();
 
-                generateKeysField.clear();
-                this.tableName = treeItem.getValue().toString();
+            for (TreeItem treeItem : children) {
+                CheckBoxTreeItem checkBoxTreeItem = (CheckBoxTreeItem) treeItem;
+                if (checkBoxTreeItem.isSelected()) {
+                    _LOG.info("process {}.{}", dbTreeItem.getValue(), treeItem.getValue());
 
-                tableNameField.setText(tableName);
-                domainObjectNameField.setText(MyStringUtils.dbStringToCamelStyle(tableName));
+                    selectedDatabaseConfig = (DatabaseConfig) treeItem.getParent().getGraphic().getUserData();
 
-                generateCode(treeItem.getValue() + "");
+                    generateKeysField.clear();
+                    this.tableName = treeItem.getValue().toString();
+
+                    tableNameField.setText(tableName);
+                    domainObjectNameField.setText(MyStringUtils.dbStringToCamelStyle(tableName));
+
+                    generateCode(treeItem.getValue() + "");
+
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
     }
@@ -290,14 +305,17 @@ public class MainUIController extends BaseFXController {
 
         // add by Benjamin 为ltms增加自动转换数据类型的处理
 
-        if (autoConvertJavaType.isSelected()) {
+        if (StringUtils.isNotBlank(javaTypeConverter.getText())) {
             try {
                 List<UITableColumnVO> tableColumns = DbUtil.getTableColumns(selectedDatabaseConfig, tableName);
 
-                LtmsTypeConvertor ltmsTypeConvertor = new LtmsTypeConvertor();
-                ltmsTypeConvertor.convert(tableColumns, tableName);
-                this.columnOverrides = ltmsTypeConvertor.getColumnOverrides();
-                this.ignoredColumns = ltmsTypeConvertor.getIgnoredColumns();
+                String className = this.javaTypeConverter.getText();
+                Class typeConverterClass = this.getClass().getClassLoader().loadClass(className);
+
+                JavaTypeConverter javaTypeConverter = (JavaTypeConverter) typeConverterClass.newInstance();
+                javaTypeConverter.convert(tableColumns, tableName);
+                this.columnOverrides = javaTypeConverter.getColumnOverrides();
+                this.ignoredColumns = javaTypeConverter.getIgnoredColumns();
 
             } catch (Exception e) {
                 _LOG.error(e.getMessage(), e);
@@ -385,8 +403,8 @@ public class MainUIController extends BaseFXController {
         generatorConfig.setAnnotation(annotationCheckBox.isSelected());
         generatorConfig.setUseActualColumnNames(useActualColumnNamesCheckbox.isSelected());
         generatorConfig.setEncoding(encodingChoice.getValue());
-        generatorConfig.setUseExampe(useExample.isSelected());
-        generatorConfig.setAutoConvertJavaType(autoConvertJavaType.isSelected());
+        generatorConfig.setUseExample(useExample.isSelected());
+        generatorConfig.setJavaTypeConverter(javaTypeConverter.getText());
         generatorConfig.setIgnoreTableSchema(ignoreTableSchema.isSelected());
         return generatorConfig;
     }
@@ -407,7 +425,7 @@ public class MainUIController extends BaseFXController {
         needToStringHashcodeEquals.setSelected(generatorConfig.isNeedToStringHashcodeEquals());
         annotationCheckBox.setSelected(generatorConfig.isAnnotation());
         useActualColumnNamesCheckbox.setSelected(generatorConfig.isUseActualColumnNames());
-        autoConvertJavaType.setSelected(generatorConfig.isAutoConvertJavaType());
+        javaTypeConverter.setText(generatorConfig.getJavaTypeConverter());
         ignoreTableSchema.setSelected(generatorConfig.isIgnoreTableSchema());
     }
 
