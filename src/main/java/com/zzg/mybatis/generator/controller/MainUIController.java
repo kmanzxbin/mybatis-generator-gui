@@ -78,6 +78,8 @@ public class MainUIController extends BaseFXController {
     @FXML
     private CheckBox useExample;
     @FXML
+    private CheckBox ignoreBlobColumn;
+    @FXML
     private CheckBox ignoreTableSchema;
     @FXML
     private TreeView<String> leftDBTree;
@@ -313,6 +315,7 @@ public class MainUIController extends BaseFXController {
                 Class typeConverterClass = this.getClass().getClassLoader().loadClass(className);
 
                 JavaTypeConverter javaTypeConverter = (JavaTypeConverter) typeConverterClass.newInstance();
+                javaTypeConverter.setIgnoreBlobColumn(ignoreBlobColumn.isSelected());
                 javaTypeConverter.convert(tableColumns, tableName);
                 this.columnOverrides = javaTypeConverter.getColumnOverrides();
                 this.ignoredColumns = javaTypeConverter.getIgnoredColumns();
@@ -406,6 +409,7 @@ public class MainUIController extends BaseFXController {
         generatorConfig.setUseExample(useExample.isSelected());
         generatorConfig.setJavaTypeConverter(javaTypeConverter.getText());
         generatorConfig.setIgnoreTableSchema(ignoreTableSchema.isSelected());
+        generatorConfig.setIgnoreBlobColumn(ignoreBlobColumn.isSelected());
         return generatorConfig;
     }
 
@@ -427,6 +431,7 @@ public class MainUIController extends BaseFXController {
         useActualColumnNamesCheckbox.setSelected(generatorConfig.isUseActualColumnNames());
         javaTypeConverter.setText(generatorConfig.getJavaTypeConverter());
         ignoreTableSchema.setSelected(generatorConfig.isIgnoreTableSchema());
+        ignoreBlobColumn.setSelected(generatorConfig.isIgnoreBlobColumn());
     }
 
     @FXML

@@ -64,6 +64,16 @@ public class GeneratorConfig {
 
 	private boolean ignoreTableSchema;
 
+	private boolean ignoreBlobColumn;
+
+	public boolean isIgnoreBlobColumn() {
+		return ignoreBlobColumn;
+	}
+
+	public void setIgnoreBlobColumn(boolean ignoreBlobColumn) {
+		this.ignoreBlobColumn = ignoreBlobColumn;
+	}
+
 	public boolean isIgnoreTableSchema() {
 		return ignoreTableSchema;
 	}

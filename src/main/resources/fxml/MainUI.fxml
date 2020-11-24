@@ -287,6 +287,11 @@
                                                   selected="true" text="use example"
                                                   GridPane.columnIndex="0" GridPane.rowIndex="12" GridPane.columnSpan="2" GridPane.halignment="LEFT"/>
 
+                                        <CheckBox fx:id="ignoreBlobColumn"
+                                                  mnemonicParsing="false" selected="false"
+                                                  text="ignore blob column"
+                                                  GridPane.columnIndex="2" GridPane.rowIndex="12" GridPane.columnSpan="2" GridPane.halignment="LEFT"/>
+
                                         <Label text="java type converter" GridPane.columnIndex="0" GridPane.rowIndex="13"/>
                                         <TextField fx:id="javaTypeConverter" prefHeight="24.0" prefWidth="138.0"
                                                    promptText="" GridPane.columnIndex="1"

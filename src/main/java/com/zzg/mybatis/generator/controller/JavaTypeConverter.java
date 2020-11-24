@@ -16,4 +16,6 @@ public interface JavaTypeConverter {
     public List<IgnoredColumn> getIgnoredColumns();
 
     public List<ColumnOverride> getColumnOverrides();
+
+    default void setIgnoreBlobColumn(boolean ignoreBlobColumn){};
 }
